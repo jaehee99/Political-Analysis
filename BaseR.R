@@ -1,24 +1,24 @@
-# September 16, 2021 
-# Jaehee Lee 
+# libraries 
+library(poliscidata) # load poliscidata
+library(tidyverse)
+library(moments) # load moments library to check the skewness 
 
-# 1. 
-# (a) 
+# 
 stat.tool <- c("R", "Python", "Stata", "SAS", "SPSS")
 stat.tool
-# (b) 
+#  
 calendar <- matrix(5:18, byrow = TRUE, nrow = 2)
 calendar
-# (c) 
+#  
 kids <- c("girl", "boy", "boy", "boy", "girl")
 factor_kids <- factor(kids)
 factor_kids         
-# (d) 
+# 
 grade <- c("A", "D", "B", "C", "B", "A", "B", "B", "C", "F")
 factor_grade <- factor(grade, ordered = TRUE, levels = c("F", "D", "C", "B", "A"))
 factor_grade        
 
-# 2. 
-# (a) 
+# 
 country <- c("Cambodia", "China", "Iceland", "Kazakhstan", "Saudi Arabia", "Singapore", 
              "South Africa", "South Korea", "UK", "US")
 status <- c("partly free", "not free", "free", "not free", "not free", "partly free", "free", 
@@ -29,52 +29,44 @@ userright <- c(13, 0, 36, 11, 5, 18, 25, 20, 25, 25)
 InternetFreedom <- data.frame(country, status, access, content, userright)
 InternetFreedom
 
-# (b) 
-## Using base R 
-### First way
+# 
 InternetFreedom2 <- InternetFreedom
 InternetFreedom2$total <- InternetFreedom2$access + InternetFreedom2$content + InternetFreedom2$userright
 InternetFreedom2
 
-## Using tidyverse
-library(tidyverse)
-### Second way
+#
 InternetFreedom %>%
   group_by(country) %>%
   mutate(total = access + content + userright) %>%
   ungroup() -> InternetFreedom2_2way
 InternetFreedom2_2way
-### Third way  
+
+#
 InternetFreedom %>%  
   add_column(total = access + content + userright) -> InternetFreedom2_3way
 InternetFreedom2_3way
 
-# (c) 
+# 
 partly_free_data <- subset(InternetFreedom2, subset = status == "partly free", select = c("country", "status"))
 partly_free_data
-# (d) 
+#
 userright_less_20 <- subset(InternetFreedom2, subset = userright < 20) 
 userright_less_20
-# (e)
+# 
 total_high_low <- InternetFreedom2[order(-InternetFreedom2$total), ]
 total_high_low
 
-# 3. 
+# 
 NewList <- list(stat.tool,calendar, kids, grade, InternetFreedom, InternetFreedom2)
 NewList      
 
-# October 14, 2021
-# Jaehee Lee 
-
-library(poliscidata) # load poliscidata
-
-# Question 1 
+# 
 str(gss) 
 help(gss) 
 gss$science_quiz # check science_quiz 
 gss$wordsum # check wordsum
 
-# Question 1-(a)
+# 
 # Use weights argument because gss dataset is a survey data
 mean_science_quiz <- wtd.mean(gss$science_quiz, w=gss$wtss) 
 mean_science_quiz
@@ -100,7 +92,7 @@ mode_wordsum
 sd_wordsum <- wtd.sd(gss$wordsum, w=gss$wtss) 
 sd_wordsum
 
-# Question 1-(b)
+# 
 # Answer:
 # "The public knows more about words than about science": FALSE
 # Reasoning: 
@@ -115,13 +107,13 @@ print(mode_science_quiz > mode_wordsum)
 # This result is TRUE, indicating that the most common value in science_quiz is higher than wordsum.
 # Based on the results above, the public knows more about science than words, therefore, the statement in the question 1-(b) is FALSE
 
-#Question 1-(c)
+#
 # "science_quiz has a greater degree of dispersion than word_sum": TRUE
 print(sd_science_quiz > sd_wordsum)
 # This is TRUE, so standard deviation of science_quiz is higher than the standard deviation of wordsum.
 # If the standard deviation is higher then, it is more spread out, indicating that science_quiz has a greater degree of dispersion than word_sum
 
-#Question 1-(d)
+#
 science_quiz_percent <- freqC(gss$science_quiz, w=gss$wtss)
 # Including the NA's the percentage is this(Percent):
 science_percent_w_NA <- science_quiz_percent[10, 'Percent'] + science_quiz_percent[11, 'Percent'] 
@@ -134,7 +126,7 @@ wordsum_percent_w_NA <- wordsum_percent[10, 'Percent'] + wordsum_percent[11, 'Pe
 # Ignoring the NA's the percentage is this(Valid Percent):
 wordsum_percent_n_NA <- wordsum_percent[10, 'Valid Percent'] + wordsum_percent[11, 'Valid Percent'] 
 
-# Result: 
+#  
 # Respondents would receive a grade of A on science quiz with NA included is: 
 science_percent_w_NA
 # Respondents would receive a grade of A on science quiz without NA is: 
@@ -144,8 +136,7 @@ wordsum_percent_w_NA
 # Respondents would receive a grade of A on wordsum without NA is: 
 wordsum_percent_n_NA
 
-# Question 2 
-# Question 2-(a)
+# 
 gss$attend #check the attend variable 
 class(gss$attend) 
 levels(gss$attend) # check levels 
@@ -158,7 +149,7 @@ attend_ord <- factor(gss$attend,
                      ordered=TRUE)  
 class(attend_ord) # check attend_ord
 
-# Question 2-(b)
+# 
 # mode of attend_ord 
 wtd.mode(attend_ord, w=gss$wtss)
 # median of attend_ord
@@ -170,7 +161,7 @@ freqC(attend_ord, w=gss$wtss, plot = FALSE)
 # We can say that the mode is "Never" because the Valid Percent of "Never" is the highest. 
 # When the Cum Percent is 54.08 is "Sev times/yr", so this includes 50 percent, therefore, "Sev times/yr" is the median of this attend_ord
 
-# Question 2-(c)
+# 
 freqC(attend_ord, w=gss$wtss) # Also, show the plot and see the dispersion. 
 
 # Answer: Low dispersion!
@@ -179,15 +170,15 @@ freqC(attend_ord, w=gss$wtss) # Also, show the plot and see the dispersion.
 # If attend_ord had no dispersion, all cases would go into one category, but it isn't 
 # Therefore, based on the above reasoning and also when we see the bar chart, it seems that attend_ord is a relatively low degree of dispersion.
 
-# Question 3
+# 
 ?world 
 str(world)
 world$hdi
-# Question 3 -(a)
+# 
 sum(is.na(world$hdi))
 # There are nine missing values in hdi
 
-# Question 3- (b)
+# 
 hdi_mean <- mean(world$hdi, na.rm = TRUE)
 hdi_median <- median(world$hdi, na.rm = TRUE)
 
@@ -198,12 +189,10 @@ print(hdi_mean < hdi_median)
 # most values are clustered in the right side and there is few outliers that pulls the mean down, 
 # so there is a long tail in the negative direction so it is left skewed/negatively skewed.
 
-
-library(moments) # load moments library to check the skewness 
 skewness(world$hdi, na.rm = TRUE) 
 # Also checked the skewness using moments library, and the result is negative. 
 
-# Question 3- (c)
+# 
 world_country_hdi <- world[ , c("country", "hdi")] # select "country" and "hdi" variables and assign it to a world_country_hdi
 ordered_hdi <- world_country_hdi[order(world_country_hdi$hdi, decreasing = TRUE), ] # order hdi and assign it to ordered_hdi 
 top_5 <- ordered_hdi[1:5,] # since we already made it into the order, we can just select the first 5 rows and assign it to top_5
@@ -212,15 +201,10 @@ top_5['country'] # show the five countries that have highest values of HDI
 # Double check using sortC function which is only in poliscidata, in one line
 sortC(world, country, hdi, descending = TRUE)[1:5, ]['country']
 
-# "November 05, 2021"
-# Jaehee Lee
-
-library(poliscidata) # load library 
-
-# 1. 
+# 
 str(world) # see the data 
 # 'world' dataset description: variables about countries in the world.
-# 1-(a) 
+# 
 # world$women13: "Percent Women in lower house of legislature, democracies only, 2013 (Inter-Parliamentary Union)"
 # Step 1: see the data
 str(world$women13) 
@@ -229,13 +213,13 @@ is.na(world$women13)
 # Step 3: Figure out how many missing values world$women13 have. 
 sum(is.na(world$women13))
 
-# 1-(b)
+# 
 mean(world$women13, na.rm = TRUE)
 median(world$women13, na.rm = TRUE)
 # Answer: Mean is 21.10 and Median is 20.80
 summary(world$women13) # double check using summary() function
 
-# 1-(c) 
+# 
 hist(world$women13, 
      main = "HISTOGRAM \n Percent Women in lower house of legislature \n (Democracies,2013)",
      xlab = " 'world' data, 'women13' variable",
@@ -243,7 +227,7 @@ hist(world$women13,
      col= "light blue", 
      xlim = c(0, 50))
 
-# 1-(d) 
+#  
 # The standard deviation can tell how spread out from the mean/median.
 # So, I find out the standard deviation, because it can tell the dispersion of the distribution
 sd(world$women13, na.rm = TRUE) # I get the result of 10.6408 
@@ -253,23 +237,21 @@ sd(world$women13, na.rm = TRUE) # I get the result of 10.6408
 # Here I get the result of 10.6408 and the smallest value of s.d. is 0, so I can say that the values are 
 # not that close to the mean. So, it is high dispersion. 
 
-# 1-(e) 
+#  
 world$women13.centered <- scale(world$women13, center=TRUE, scale=FALSE)
 summary(world$women13.centered) # check results
 
-# 1-(f) 
+# 
 world$women13.standard <- scale(world$women13, center = TRUE, scale = TRUE)
 # when scale is TRUE, then argument will divide the resulting difference by s.d. 
 summary(world$women13.standard)
 
-# 2. 
-
-# 2-(a) 
+#
 nes
 levels(nes$budget_deficit_x)
 freqC(nes$budget_deficit_x, nes$nesw)
 
-# 2-(b) 
+#  
 nes$budget_deficit_x.n <- as.numeric(nes$budget_deficit_x)
 head(nes$budget_deficit_x, 10)
 head(nes$budget_deficit_x.n, 10) 
@@ -281,49 +263,48 @@ head(nes$budget_deficit_x.n, 10)
 # On nes$budget deficit x.n, those who oppose reducing the federal budget
 # deficit have the following numeric codes: 5, 6, and 7.
 
-# 2-(c) 
+# 
 nes$budget_deficit_x.3cat <- cut2(nes$budget_deficit_x.n, cuts = c(4,5,7))
 
-# 2-(d) 
+#  
 freqC(nes$budget_deficit_x.3cat, w=nes$nesw)
 
-# 2-(e)
+# 
 levels(nes$budget_deficit_x.3cat) <- c("Favor", "Neither", "Oppose")
 levels(nes$budget_deficit_x.3cat)
 freqC(nes$budget_deficit_x.3cat, w=nes$nesw)
 table(nes$budget_deficit_x, nes$budget_deficit_x.3cat)
 
-# 3. 
-# 3-(a) 
+#  
 # nes description: The American National Election Survey polls individuals about their political beliefs and behavior
 # nes$ftgr cons: Feeling thermometer(Conservatives)
 # nes$ftgr liberals: Feeling thermometer(Liberals)
 nes$ftgr_conservatism.index <- nes$ftgr_cons - nes$ftgr_liberals # create a new variable 
 
-# 3-(b) 
+# 
 min(nes$ftgr_conservatism.index, na.rm = TRUE)
 max(nes$ftgr_conservatism.index, na.rm = TRUE)
 summary(nes$ftgr_conservatism.index, na.rm = TRUE)
 # Answer: 
 # The new variable nes$ftgr conservatism.index ranges -100 between and 100.
 
-# 3-(c) 
+# 
 cutpoints = c(-90,-80,-70,-60,-50,-40,-30,-20,-10,0,1,11,21,31,41,51,61,71,81,91,100)
 nes$conservatism.index.cat <- cut2(nes$ftgr_conservatism.index, cuts=cutpoints)
 head(nes$conservatism.index.cat)
 
-# 3-(d) 
+# 
 class(nes$conservatism.index.cat) # this is factor 
 nes$conservatism.index.cat <- as.ordered(nes$conservatism.index.cat) # make it as an ordered factor
 class(nes$conservatism.index.cat)
 
-# 3-(e) 
+# 
 levels(nes$conservatism.index.cat) <- c("-100 ~ -91", "-90 ~ -81", "-80 ~ -71", 
                                         "-70 ~ -61", "-60 ~ -51", "-50 ~ -41", "-40 ~ -31","-30 ~ -21", "-20 ~ -11", "-10 ~ 1", "0", "1~10", "11~20" ,"21~30","31~40", "41~50", "51~60",
                                         "61~70", "71~80", "81~90","91~100")
 levels(nes$conservatism.index.cat)
 
-# 3-(f) 
+#  
 freqC(nes$conservatism.index.cat, w=nes$wt) 
 # Describe its distribution: 
 # 1) Almost Symmetric Distribution: The shape to the left and the right of value "0" line are similar
@@ -333,7 +314,7 @@ freqC(nes$conservatism.index.cat, w=nes$wt)
 # Indicating that these people have no feeling at all, for both conservatives and liberals.
 
 
-# 4. 
+# 
 # Step 1: Examine the data 
 str(gss$grass)
 # Step 2: Create an indicator variable
@@ -344,12 +325,7 @@ head(gss$grass.yes, 10)
 # Final Step: Double check final output using table function
 table(gss$grass, gss$grass.yes)
 
-
-# November 6, 2021
-# Student: Jaehee Lee 
-
-library(poliscidata) # load the package 
-# Question 1. 
+# 
 str(states$demstate13) # check the data 
 hist(states$demstate13, 
      main="Partisan Composition of State Legislatures in the U.S.", 
@@ -360,7 +336,7 @@ hist(states$demstate13,
      border = "white", 
      font.lab = 4)
 
-# Question 2
+# 
 world$dem_level4 #Regime type (Economist 2014)
 str(world$dem_level4) #Factor #Four levels 
 class(world$dem_level4)
@@ -370,7 +346,7 @@ plot(world$dem_level4,
      ylab = "Counts", 
      xlab = "Regime type in 2014")
 
-# Question 3 
+# 
 str(world$oecd)
 str(world$gender_equal3)
 oecd_gender <- table(world$oecd, world$gender_equal3)
@@ -382,7 +358,7 @@ barplot(oecd_gender,
         ylim = c(0,25),
         beside = TRUE)
 
-# Question 4 
+# 
 states$south <- factor(states$south , levels=c("South", "Nonsouth"))
 
 boxplot(states$blkpct10 ~ states$south, 
@@ -392,13 +368,7 @@ boxplot(states$blkpct10 ~ states$south,
         ylab = "%", 
         xlab = "")
 
-# Jaehee Lee 
-# November 26, 2021
-
-
-library(poliscidata) # load package
-
-# 1-(a)
+# 
 # The age hypothesis: Older people are more likely to turn out to vote than younger people
 # check variables 
 str(nes$voted2012) # Did Respondent vote in 2012?
@@ -408,19 +378,19 @@ levels(nes$dem_age3) # check the levels of dem_age3
 
 xtp(nes, y = voted2012, x = dem_age3)
 
-# 1-(b) 
+# 
 # Answer: Yes, it appears that the age hypothesis is correct! 
 # 68.1% of respondents who are 17-39 years old voted in 2012, and this figure increase to 82.3%. 
 # 82.3 % of respondents who are 40-59 years old voted in 2012, and further this figure increase to 88.57%.
 # 88.6% of respondents who are more than 60 years old voted in 2012. 
 
-# 1-(c)
+# 
 str(nes$cses_closepty) # cses_closepty: Close to any political party? 
 nesD <- svydesign(id = ~ 1, data = nes, weights = ~wt) # Update nesD 
 # cross tab with a control variable 
 xtabC(~voted2012 + dem_age3 + cses_closepty , data = nesD)
 
-# 1-(d)
+# 
 # Additive. Based on the controlled cross-tab, 
 # both when 'closeness to political party' is 'yes' and 'no', 
 # shows that older people are more likely to turnout to vote than younger people. 
@@ -463,27 +433,27 @@ legend("bottomright",
 # When we see this line graph, we can say that red line and blue line are almost parallel. 
 # So it is additive relationship
 
-# 2-(a)
+# 
 # check variables
 str(nes$ftcasi_illegal)
 str(nes$libcon3)
 # Create a mean comparison table to check 2-(a) statement
 compmeans(x = nes$ftcasi_illegal, f = nes$libcon3, w = nes$wt, plot = FALSE)
 
-# 2 - (b)
+# 
 # Yes, the political ideology explanation is supported! 
 # Liberals are more likely to have warmer feelings toward illegal immigrants than conservatives. 
 # The mean rating of those who are liberals is 46.75.
 # Yet, it goes down to 37.74 and then 31.81 for those who are moderate, conservative, respectively.
 
-# 2 - (c) 
+#  
 # Check variable
 str(nes$dem_educ3)
 levels(nes$dem_educ3)
 # mean comparison table with a control var
 imeansC(~ftcasi_illegal, ~libcon3+ dem_educ3, data = nesD)
 
-# 2- (d) 
+# 
 # Interactive: 
 # Although there is a negative relationship between political 
 # ideology and feeling ratings toward illegal immigrants with all levels of education level.
@@ -529,7 +499,6 @@ legend("topright",
        bty = "n",                   
        col = c("blue", "green", "red"),     
        text.col = c("blue", "green", "red"))
-
 
 #We can see in the graph that the relationship between political ideology and feelings toward illegal immigrants,
 # controlling for education level, is interactive. 
